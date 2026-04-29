@@ -1,0 +1,5 @@
+```python
+# Core data stack
+pandas=         # Data manipulation
+numpy=         # Numerical computing
+scipy=         # Statistical tests
