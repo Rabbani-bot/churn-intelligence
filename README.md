@@ -166,11 +166,11 @@ All random seeds are fixed (`RANDOM_STATE = 42`). The synthetic data generator p
 
 ## Author
 
-**[Mohammad Rabbani]**  
+**Mohammad Rabbani**  
 Data Analyst & Business Intelligence Specialist  
-[LinkedIn](www.linkedin.com/in/rabbani-analyst) 
-[Kaggle](https://www.kaggle.com/rabbani0123) 
-[Email](mrabbani777tcd@gmail.com)
+[www.linkedin.com/in/rabbani-analyst]
+[https://www.kaggle.com/rabbani0123]
+[mrabbani777tcd@gmail.com]
 
 ---
 
