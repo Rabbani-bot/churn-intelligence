@@ -24,67 +24,6 @@ This project delivers a production-grade, end-to-end customer churn intelligence
 
 A 1% reduction in churn rate on a $10M ARR business equals $100,000 in retained revenue annually. This system pays for itself in the first week of deployment.
 
----
-
-## Architecture Overview
-
-```
-Raw Data Sources                Processing Layer              Output Layer
-─────────────────               ─────────────────             ─────────────
-CRM (Salesforce/HubSpot) ──►   SQL: Extraction &        ──►  Python: ML Churn
-Billing (Stripe/Recurly)  ──►  Transformation Queries       Scoring Model
-Support (Zendesk)         ──►  Python: EDA & Feature    ──►  Power BI: Executive
-Product Analytics         ──►  Engineering Pipeline         Dashboard (Dynamic)
-                               Excel: Business Report   ──►  Excel: Churn Report
-                               Templates                     & Recovery Tracker
-```
-
----
-
-## Repository Structure
-
-```
-churn-intelligence/
-│
-├── data/
-│   ├── raw/                          # Raw data (gitignored in production)
-│   └── processed/                    # Cleaned, feature-engineered datasets
-│
-├── sql/
-│   ├── 01_schema_setup.sql           # Database schema definition
-│   ├── 02_data_extraction.sql        # Core extraction queries
-│   ├── 03_cohort_analysis.sql        # Cohort retention queries
-│   ├── 04_revenue_at_risk.sql        # Revenue impact quantification
-│   └── 05_churn_features.sql         # Feature engineering in SQL
-│
-├── python/
-│   ├── 01_data_generation.py         # Synthetic data generator (reproducible)
-│   ├── 02_eda_analysis.py            # Exploratory data analysis (full)
-│   ├── 03_feature_engineering.py     # Feature pipeline
-│   ├── 04_churn_model.py             # ML model training & evaluation
-│   ├── 05_model_explainability.py    # SHAP-based model explanations
-│   └── 06_scoring_pipeline.py        # Production scoring pipeline
-│
-├── excel/
-│   └── Churn_Executive_Report_Template.xlsx  # Business reporting template
-│
-├── powerbi/
-│   └── Churn_Intelligence_Dashboard.pbix     # Power BI dashboard file
-│
-├── notebooks/
-│   └── Churn_Analysis_Full_Notebook.ipynb    # Kaggle/Jupyter notebook
-│
-├── reports/
-│   ├── figures/                      # All charts and visualisations
-│   └── churn_analysis_report.pdf     # Auto-generated analysis report
-│
-├── requirements.txt
-├── README.md
-└── LICENSE
-```
-
----
-
 ## Tech Stack
 
 | Layer | Tool | Purpose |
@@ -102,29 +41,29 @@ churn-intelligence/
 
 ```python
 # Core data stack
-pandas==2.1.0          # Data manipulation
-numpy==1.25.0          # Numerical computing
-scipy==1.11.0          # Statistical tests
+pandas==2.1.0         
+numpy==1.25.0          
+scipy==1.11.0         
 
 # Machine learning
-scikit-learn==1.3.0    # ML algorithms, pipeline, evaluation
-xgboost==1.7.6         # Gradient boosting (primary model)
-imbalanced-learn==0.11 # SMOTE for class imbalance
+scikit-learn==1.3.0   
+xgboost==1.7.6         
+imbalanced-learn==0.11 
 
 # Explainability
-shap==0.42.1           # SHAP values for model transparency
+shap==0.42.1           
 
 # Visualisation
-matplotlib==3.7.2      # Core plotting
-seaborn==0.12.2        # Statistical visualisation
-plotly==5.15.0         # Interactive charts
+matplotlib==3.7.2      
+seaborn==0.12.2       
+plotly==5.15.0         
 
 # Statistical analysis
-statsmodels==0.14.0    # Survival analysis, statistical tests
-lifelines==0.27.8      # Customer lifetime value, survival curves
+statsmodels==0.14.0    
+lifelines==0.27.8      
 ```
 
----
+
 
 ## Methodology
 
@@ -199,20 +138,7 @@ The accompanying Power BI dashboard (`powerbi/Churn_Intelligence_Dashboard.pbix`
 - Recommended action per customer (personalised by ML model)
 - Recovery campaign performance tracker
 
----
 
-## Excel Business Report Template
-
-The Excel workbook (`excel/Churn_Executive_Report_Template.xlsx`) provides:
-- **Dashboard tab**: One-page visual summary (sparklines, conditional formatting)
-- **Churn Register**: Sortable, filterable customer risk register with heat map
-- **Cohort Analysis**: Pivot-table-driven cohort retention grid
-- **Recovery Tracker**: Action log with outcome tracking
-- **Instructions tab**: Refresh guide for non-technical business users
-
-Designed for monthly distribution to commercial leadership with zero technical prerequisites.
-
----
 
 ## Results & Business Impact
 
@@ -229,57 +155,8 @@ Designed for monthly distribution to commercial leadership with zero technical p
 
 ---
 
-## Quickstart
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/yourusername/churn-intelligence.git
-cd churn-intelligence
 
-# 2. Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Generate synthetic data
-python python/01_data_generation.py
-
-# 5. Run full EDA
-python python/02_eda_analysis.py
-
-# 6. Train and evaluate the model
-python python/04_churn_model.py
-
-# 7. Generate scoring output
-python python/06_scoring_pipeline.py
-
-# All charts saved to reports/figures/
-# Scoring output saved to data/processed/churn_scores.csv
-```
-
----
-
-## Data Dictionary
-
-| Feature | Type | Description |
-|---|---|---|
-| `customer_id` | str | Unique customer identifier |
-| `tenure_months` | int | Months since first subscription |
-| `contract_type` | cat | Monthly / Annual / Multi-year |
-| `monthly_charges` | float | Current monthly recurring revenue |
-| `total_revenue` | float | Lifetime revenue to date |
-| `num_support_tickets` | int | Support tickets raised (last 90 days) |
-| `avg_resolution_days` | float | Mean ticket resolution time |
-| `login_frequency_30d` | float | Average daily logins (last 30 days) |
-| `feature_adoption_rate` | float | % of available features actively used |
-| `nps_score` | int | Latest NPS response (−100 to +100) |
-| `payment_delays_6m` | int | Number of late payments (last 6 months) |
-| `mrr_trend_90d` | float | MRR change over last 90 days (%) |
-| `churn_label` | bool | **Target variable** — 1 = churned |
-
----
 
 ## Reproducibility
 
@@ -289,9 +166,11 @@ All random seeds are fixed (`RANDOM_STATE = 42`). The synthetic data generator p
 
 ## Author
 
-**[Your Name]**  
+**[Mohammad Rabbani]**  
 Data Analyst & Business Intelligence Specialist  
-[LinkedIn](https://linkedin.com/in/yourprofile) · [Kaggle](https://kaggle.com/yourprofile) · [Email](mailto:you@email.com)
+[LinkedIn](www.linkedin.com/in/rabbani-analyst) 
+[Kaggle](https://www.kaggle.com/rabbani0123) 
+[Email](mrabbani777tcd@gmail.com)
 
 ---
 
@@ -299,6 +178,4 @@ Data Analyst & Business Intelligence Specialist
 
 MIT License — see [LICENSE](LICENSE) for details.
 
----
 
-*Built to demonstrate production-grade analytics engineering. Every business metric, model result, and dashboard KPI is backed by a documented, reproducible analytical pipeline.*
