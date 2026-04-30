@@ -1,16 +1,7 @@
--- =============================================================================
+
 -- CUSTOMER CHURN INTELLIGENCE PLATFORM — SQL LAYER
--- =============================================================================
--- Author  : [Your Name]
--- Engine  : PostgreSQL 15 (compatible with SQL Server / BigQuery with minor edits)
--- Purpose : Full extraction, transformation, and feature engineering pipeline
---           for the churn intelligence model
--- =============================================================================
 
-
--- =============================================================================
 -- MODULE 1 — SCHEMA SETUP
--- =============================================================================
 
 -- Drop and recreate for reproducibility (dev environment only)
 DROP TABLE IF EXISTS churn_scores CASCADE;
@@ -115,16 +106,13 @@ CREATE INDEX idx_tickets_customer     ON support_tickets(customer_id, opened_at)
 CREATE INDEX idx_nps_customer         ON nps_responses(customer_id, survey_date);
 
 
--- =============================================================================
 -- MODULE 2 — CORE CHURN FEATURE EXTRACTION
--- =============================================================================
 -- This CTE chain is the backbone of the ML feature pipeline.
 -- Each CTE computes one feature category; the final SELECT joins them all.
--- =============================================================================
 
 WITH
 
--- ── 2.1 Tenure & contract signals ──────────────────────────────────────────
+-- ── 2.1 Tenure & contract signals 
 tenure_signals AS (
     SELECT
         c.customer_id,
@@ -149,7 +137,7 @@ tenure_signals AS (
        AND co.status = 'Active'
 ),
 
--- ── 2.2 Billing & payment risk signals ────────────────────────────────────
+-- ── 2.2 Billing & payment risk signals
 billing_signals AS (
     SELECT
         customer_id,
@@ -167,7 +155,7 @@ billing_signals AS (
     GROUP BY customer_id
 ),
 
--- ── 2.3 Engagement signals (30 / 60 / 90-day windows) ─────────────────────
+-- ── 2.3 Engagement signals (30 / 60 / 90-day windows) 
 engagement_signals AS (
     SELECT
         customer_id,
@@ -200,7 +188,7 @@ engagement_signals AS (
     GROUP BY customer_id
 ),
 
--- ── 2.4 Support signals ────────────────────────────────────────────────────
+-- ── 2.4 Support signals
 support_signals AS (
     SELECT
         customer_id,
@@ -219,7 +207,7 @@ support_signals AS (
     GROUP BY customer_id
 ),
 
--- ── 2.5 NPS / sentiment signals ───────────────────────────────────────────
+-- ── 2.5 NPS / sentiment signals 
 nps_signals AS (
     SELECT DISTINCT ON (customer_id)
         customer_id,
@@ -230,7 +218,7 @@ nps_signals AS (
     ORDER BY customer_id, survey_date DESC
 ),
 
--- ── 2.6 Revenue history (expansion / contraction / total) ─────────────────
+-- ── 2.6 Revenue history (expansion / contraction / total) 
 revenue_signals AS (
     SELECT
         cu.customer_id,
@@ -249,7 +237,7 @@ revenue_signals AS (
     GROUP BY cu.customer_id
 ),
 
--- ── 2.7 Composite risk scoring in SQL ──────────────────────────────────────
+-- ── 2.7 Composite risk scoring in SQL
 risk_scores AS (
     SELECT
         t.customer_id,
@@ -268,7 +256,7 @@ risk_scores AS (
     LEFT JOIN nps_signals        n ON t.customer_id = n.customer_id
 ),
 
--- ── 2.8 Final feature table join ─────────────────────────────────────────
+-- ── 2.8 Final feature table join 
 final_features AS (
     SELECT
         t.customer_id,
@@ -333,9 +321,7 @@ SELECT * FROM final_features
 ORDER BY composite_risk_score DESC;
 
 
--- =============================================================================
 -- MODULE 3 — COHORT RETENTION ANALYSIS
--- =============================================================================
 
 WITH cohorts AS (
     SELECT
@@ -385,9 +371,7 @@ JOIN cohort_sizes cs ON rg.cohort_month = cs.cohort_month
 ORDER BY cohort_month, period_number;
 
 
--- =============================================================================
 -- MODULE 4 — REVENUE AT RISK QUANTIFICATION
--- =============================================================================
 
 WITH churn_risk AS (
     SELECT
@@ -427,9 +411,7 @@ ORDER BY
     expected_monthly_loss DESC;
 
 
--- =============================================================================
 -- MODULE 5 — EXECUTIVE CHURN KPI DASHBOARD QUERIES
--- =============================================================================
 
 -- ── 5.1 Monthly churn rate trend (24 months) ─────────────────────────────
 WITH monthly_starts AS (
@@ -490,7 +472,7 @@ ORDER BY cs.revenue_at_risk DESC
 LIMIT 50;
 
 
--- ── 5.3 Churn driver frequency (top reasons flagged by model) ─────────────
+-- ── 5.3 Churn driver frequency (top reasons flagged by model) 
 SELECT
     driver,
     COUNT(*) AS customer_count,
